@@ -43,13 +43,14 @@ async function create(req, res) {}
 async function store(req, res) {
   //profilePicture
   const { firstname, username, lastname, email, password, description } = req.body;
-  console.log(req.body);
+  console.log(req);
   const user = await User.create({
     firstname,
     username,
     lastname,
     email,
     password,
+    description: "",
     proflePicture: "",
     tweetList: [],
     following: [],
