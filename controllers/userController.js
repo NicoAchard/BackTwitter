@@ -42,13 +42,14 @@ async function create(req, res) {}
 // Store a newly created resource in storage.
 async function store(req, res) {
   //profilePicture
-  const { username, lastname, email, password, description } = req.body;
+  const { firstname, username, lastname, email, password, description } = req.body;
+  console.log(req.body);
   const user = await User.create({
+    firstname,
     username,
     lastname,
     email,
     password,
-    description,
     proflePicture: "",
     tweetList: [],
     following: [],
