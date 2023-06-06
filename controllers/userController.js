@@ -1,8 +1,5 @@
 const User = require("../models/User");
 
-// Display a listing of the resource.
-async function index(req, res) {}
-
 // Display the specified resource.
 async function show(req, res) {
   let userUrl = await User.findOne({ username: req.params.username }).populate("tweetList");
@@ -33,13 +30,6 @@ async function followUnfollow(req, res) {
   res.redirect("back");
 }
 
-// Display a listing of the resource.
-async function index(req, res) {}
-
-// Show the form for creating a new resource
-async function create(req, res) {}
-
-// Store a newly created resource in storage.
 async function store(req, res) {
   //profilePicture
   const { firstname, username, lastname, email, password, description } = req.body;
@@ -59,9 +49,6 @@ async function store(req, res) {
   console.log(user);
   return res.json(user);
 }
-
-// Show the form for editing the specified resource.
-async function edit(req, res) {}
 
 // Update the specified resource in storage.
 async function update(req, res) {}
