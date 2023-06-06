@@ -62,19 +62,14 @@ async function store(req, res) {
   }
 }
 
-function login(req, res) {
-  passport.authenticate("local", {
-    successRedirect: "/tweet",
-    failureRedirect: "/login",
-    failureFlash: {
-      type: "failureFlash",
-      message: "Parece que ha ocurrido un error con las credenciales, vuelve a intentarlo.",
-    },
-    successFlash: {
-      type: "successFlash",
-      message: "Has iniciado sesión correctamente!",
-    },
-  })(req, res);
+async function login(req, res) {
+  const { email, password } = req.body;
+  const user = await User.findOne({
+    email: email,
+  });
+  (await user.comparePassword(password))
+    ? res.json({ response: "Usted se ha loguaeado correctamente" }) //res.json(user)
+    : res.json({ response: "la contraseña no oincide" });
 }
 
 async function indexLogout(req, res) {
