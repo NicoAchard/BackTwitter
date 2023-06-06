@@ -40,7 +40,23 @@ async function index(req, res) {}
 async function create(req, res) {}
 
 // Store a newly created resource in storage.
-async function store(req, res) {}
+async function store(req, res) {
+  //profilePicture
+  const { username, lastname, email, password, description } = req.body;
+  const user = await User.create({
+    username,
+    lastname,
+    email,
+    password,
+    description,
+    proflePicture: "",
+    tweetList: [],
+    following: [],
+    followers: [],
+  });
+  console.log(user);
+  return res.json(user);
+}
 
 // Show the form for editing the specified resource.
 async function edit(req, res) {}
@@ -51,9 +67,6 @@ async function update(req, res) {}
 // Remove the specified resource from storage.
 async function destroy(req, res) {}
 
-// Otros handlers...
-// ...
-
 module.exports = {
   edit,
   update,
@@ -62,4 +75,5 @@ module.exports = {
   showFollowing,
   showFollowers,
   followUnfollow,
+  store,
 };
