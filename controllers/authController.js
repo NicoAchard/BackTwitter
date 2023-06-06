@@ -1,8 +1,8 @@
 // const Likes = require("../models/Likes");
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
-const { passport } = require("../passport");
 const formidable = require("formidable");
+
 // Display a listing of the resource.
 async function indexLogin(req, res) {
   return res.render("pages/login");
