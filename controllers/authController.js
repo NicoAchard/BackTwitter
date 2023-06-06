@@ -67,9 +67,12 @@ async function login(req, res) {
   const user = await User.findOne({
     email: email,
   });
+
   (await user.comparePassword(password))
     ? res.json({ response: "Usted se ha loguaeado correctamente" }) //res.json(user)
     : res.json({ response: "la contraseña no oincide" });
+
+  return res.json({ response: "El email del usuario que estas intentando loguearte no existe" });
 }
 
 async function indexLogout(req, res) {
