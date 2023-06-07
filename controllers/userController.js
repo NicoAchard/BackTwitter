@@ -35,7 +35,6 @@ async function store(req, res) {
   try {
     //profilePicture
     const { firstname, username, lastname, email, password, description } = req.body;
-    console.log(req);
     const user = await User.create({
       firstname,
       username,
