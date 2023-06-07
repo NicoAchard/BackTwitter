@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const jwt = require("jsonwebtoken");
 
 // Display the specified resource.
 async function show(req, res) {
@@ -31,23 +32,27 @@ async function followUnfollow(req, res) {
 }
 
 async function store(req, res) {
-  //profilePicture
-  const { firstname, username, lastname, email, password, description } = req.body;
-  console.log(req);
-  const user = await User.create({
-    firstname,
-    username,
-    lastname,
-    email,
-    password,
-    description: "",
-    proflePicture: "",
-    tweetList: [],
-    following: [],
-    followers: [],
-  });
-  console.log(user);
-  return res.json(user);
+  try {
+    //profilePicture
+    const { firstname, username, lastname, email, password, description } = req.body;
+    console.log(req);
+    const user = await User.create({
+      firstname,
+      username,
+      lastname,
+      email,
+      password,
+      description: "",
+      proflePicture: "",
+      tweetList: [],
+      following: [],
+      followers: [],
+    });
+    const token = jwt.sign({ id: user.id }, process.env.TOKEN_SECRET);
+    return res.json({ token });
+  } catch (e) {
+    return console.log(e);
+  }
 }
 
 // Update the specified resource in storage.
@@ -57,7 +62,6 @@ async function update(req, res) {}
 async function destroy(req, res) {}
 
 module.exports = {
-  edit,
   update,
   destroy,
   show,

@@ -2,6 +2,7 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const formidable = require("formidable");
+const jwt = require("jsonwebtoken");
 
 // Display a listing of the resource.
 async function indexLogin(req, res) {
@@ -63,17 +64,23 @@ async function store(req, res) {
 }
 
 async function login(req, res) {
-  const { email, password } = req.body;
-  const user = await User.findOne({
-    email: email,
-  });
-  if (user) {
-    (await user.comparePassword(password))
-      ? res.json({ response: "Usted se ha loguaeado correctamente" }) //res.json(user)
-      : res.json({ response: "La contraseña no coincide" });
+  const { usernameEmail, password } = req.body;
+  try {
+    let user = await User.findOne({
+      email: usernameEmail,
+    });
+    if (!user) {
+      user = await User.findOne({
+        username: usernameEmail,
+      });
+    }
+    if (!user) res.json("Credenciales inválidas");
+    if (!user.comparePassword(password)) res.json("Credenciales inválidas");
+    const token = jwt.sign({ id: user.id }, process.env.TOKEN_SECRET);
+    return res.json({ token });
+  } catch (e) {
+    return console.log(e);
   }
-
-  return res.json({ response: "El email del usuario no existe" });
 }
 
 async function indexLogout(req, res) {
