@@ -3,19 +3,21 @@ const jwt = require("jsonwebtoken");
 
 // Display the specified resource.
 async function show(req, res) {
-  let userUrl = await User.findOne({ username: req.params.username }).populate("tweetList");
+  let userUrl = await User.findOne({ username: req.params.username }).populate("tweetList"); //Cambiar por "tweets"
   userUrl.tweetList.sort((a, b) => b.createdAt - a.createdAt);
   return res.render("pages/profile", { userUrl });
 }
 
 async function showFollowing(req, res) {
-  const usersFollowing = await User.find({ followers: { $in: req.user._id } });
-  res.render("pages/following", { usersFollowing });
+  const user = await User.findById(req.auth.id).populate("following");
+  delete user.password;
+  return res.json({ user });
 }
 
 async function showFollowers(req, res) {
-  const usersFollower = await User.find({ following: { $in: req.user._id } });
-  res.render("pages/followers", { usersFollower });
+  const user = await User.findById(req.auth.id).populate("followers");
+  delete user.password;
+  return res.json({ user });
 }
 
 async function followUnfollow(req, res) {
@@ -28,7 +30,7 @@ async function followUnfollow(req, res) {
     await User.updateOne({ _id: req.user._id }, { $push: { following: req.body.id } });
     await User.updateOne({ _id: req.body.id }, { $push: { followers: req.user._id } });
   }
-  res.redirect("back");
+  return;
 }
 
 async function store(req, res) {
