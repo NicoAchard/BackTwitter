@@ -49,8 +49,16 @@ async function store(req, res) {
     });
     const token = jwt.sign({ id: user.id }, process.env.TOKEN_SECRET);
     return res.json({ token });
-  } catch (e) {
-    return console.log(e);
+  } catch (error) {
+    if (
+      error.code === 11000 &&
+      error.keyPattern &&
+      (error.keyPattern.username === 1 || error.keyPattern.email === 1)
+    ) {
+      return { error: error };
+    } else {
+      return console.log("error");
+    }
   }
 }
 
