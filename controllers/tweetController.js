@@ -18,35 +18,15 @@ async function index(req, res) {
 
 // Store a newly created resource in storage.
 async function store(req, res) {
+  console.log(req.body);
   const tweet = await Tweet.create({
     content: req.body.content,
-    author: req.user._id,
+    author: req.auth.id,
     createdAt: new Date(),
     likes: [],
   });
 
-  req.user.tweetList.push(tweet);
-  await req.user.save();
-
-  // const currentDate = new Date();
-  // const monthIndex = currentDate.getMonth();
-  // const monthNames = [
-  //   "January",
-  //   "February",
-  //   "March",
-  //   "April",
-  //   "May",
-  //   "June",
-  //   "July",
-  //   "August",
-  //   "September",
-  //   "October",
-  //   "November",
-  //   "December",
-  // ];
-  // const monthName = monthNames[monthIndex].substring(0, 3);
-
-  return res.redirect(`/usuarios/${req.user.username}`);
+  return res.json({ response: "tweet creado" });
 }
 
 // Update the specified resource in storage.

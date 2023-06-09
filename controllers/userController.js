@@ -1,7 +1,6 @@
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 
-// Display the specified resource.
 async function show(req, res) {
   let user = await User.findOne({ username: req.params.username }).populate("tweetList"); //Cambiar por "tweets"
   user.tweetList.sort((a, b) => b.createdAt - a.createdAt);
