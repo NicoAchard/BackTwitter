@@ -18,6 +18,10 @@ router.get(
 );
 // router.post("/follow", userController.followUnfollow);
 // router.get("/crear", ensureAuthenticated, userController.create);
-// router.get("/:username", userController.show);
+router.get(
+  "/:username",
+  checkJwt({ secret: process.env.TOKEN_SECRET, algorithms: ["HS256"] }),
+  userController.show,
+);
 
 module.exports = router;
