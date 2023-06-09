@@ -34,13 +34,14 @@ async function update(req, res) {}
 
 // Remove the specified resource from storage.
 async function destroy(req, res) {
-  if (req.user.tweetList.includes(req.params.id)) {
+  const user = await User.findById(req.auth.id);
+  if (user.tweetList.includes(req.params.id)) {
     await Tweet.findByIdAndRemove(req.params.id);
-    await User.updateOne({ _id: req.user._id }, { $pull: { tweetList: req.params.id } });
+    await User.updateOne({ _id: req.auth.id }, { $pull: { tweetList: req.params.id } });
 
-    res.redirect("back");
+    return console.log("borrado");
   } else {
-    res.redirect("back");
+    return console.log(" no borrado");
   }
 }
 

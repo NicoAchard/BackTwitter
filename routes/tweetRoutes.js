@@ -13,7 +13,12 @@ router.post(
   checkJwt({ secret: process.env.TOKEN_SECRET, algorithms: ["HS256"] }),
   tweetController.store,
 );
-router.delete("/:id", tweetController.destroy);
+router.delete(
+  "/:id",
+  checkJwt({ secret: process.env.TOKEN_SECRET, algorithms: ["HS256"] }),
+  tweetController.destroy,
+);
+
 router.post(
   "/like",
   checkJwt({ secret: process.env.TOKEN_SECRET, algorithms: ["HS256"] }),
