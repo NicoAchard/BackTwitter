@@ -83,16 +83,9 @@ async function login(req, res) {
   }
 }
 
-async function indexLogout(req, res) {
-  req.session.destroy(function (err) {
-    res.redirect("/login");
-  });
-}
-
 module.exports = {
   indexLogin,
   indexSignUp,
   store,
   login,
-  indexLogout,
 };

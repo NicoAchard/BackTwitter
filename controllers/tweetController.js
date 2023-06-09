@@ -3,6 +3,7 @@ const User = require("../models/User");
 
 async function index(req, res) {
   try {
+    console.log("---------------");
     console.log(req.auth);
     const user = await User.findById(req.auth.id);
     let tweets = await Tweet.find({ author: { $in: user.following } }).populate("author");
