@@ -1,13 +1,19 @@
 const Tweet = require("../models/Tweet");
 const User = require("../models/User");
-// Display a listing of the resource.
+
 async function index(req, res) {
-  let tweets = await Tweet.find({ author: { $in: req.user.following } }).populate("author");
-  // ordena los tweets por la fecha de creacion de forma descendente
-  tweets.sort((a, b) => b.createdAt - a.createdAt);
-  // recorta los 20 primeros elementos del array
-  tweets = tweets.slice(0, 20);
-  return res.render("pages/home", { tweets });
+  try {
+    console.log(req.auth);
+    const user = await User.findById(req.auth.id);
+    let tweets = await Tweet.find({ author: { $in: user.following } }).populate("author");
+
+    tweets.sort((a, b) => b.createdAt - a.createdAt);
+    tweets = tweets.slice(0, 20);
+    console.log(typeof tweets);
+    return res.json({ tweets: tweets });
+  } catch (e) {
+    return console.log(e);
+  }
 }
 
 // Store a newly created resource in storage.
@@ -75,7 +81,7 @@ async function like(req, res) {
 
 module.exports = {
   index,
-  show,
+
   store,
   update,
   destroy,
