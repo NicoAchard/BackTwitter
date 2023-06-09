@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 async function show(req, res) {
   let userUrl = await User.findOne({ username: req.params.username }).populate("tweetList"); //Cambiar por "tweets"
   userUrl.tweetList.sort((a, b) => b.createdAt - a.createdAt);
-  return res.render("pages/profile", { userUrl });
+  return res.json({ userUrl });
 }
 
 async function showFollowing(req, res) {
