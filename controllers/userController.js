@@ -49,7 +49,7 @@ async function store(req, res) {
       followers: [],
     });
     const token = jwt.sign({ id: user.id }, process.env.TOKEN_SECRET);
-    return res.json({ token });
+    return res.json({ token, userLoggedId: user._id });
   } catch (error) {
     if (
       error.code === 11000 &&
