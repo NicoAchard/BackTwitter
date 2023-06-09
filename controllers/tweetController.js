@@ -66,13 +66,19 @@ async function destroy(req, res) {
 
 async function like(req, res) {
   try {
-    const tweet = await Tweet.findById(req.body.tweetInfo);
-    if (tweet.likes.includes(req.user._id)) {
-      await Tweet.findByIdAndUpdate({ _id: tweet._id }, { $pull: { likes: req.user._id } });
-      return res.redirect("back");
+    const tweet = await Tweet.findById(req.body.tweetId);
+    if (tweet.likes.includes(req.auth._id)) {
+      const pull = await Tweet.findByIdAndUpdate(
+        { _id: tweet._id },
+        { $pull: { likes: req.auth._id } },
+      );
+      return res.json(pull);
     } else {
-      await Tweet.findByIdAndUpdate({ _id: tweet._id }, { $push: { likes: req.user._id } });
-      return res.redirect("back");
+      const push = await Tweet.findByIdAndUpdate(
+        { _id: tweet._id },
+        { $push: { likes: req.auth._id } },
+      );
+      return res.json(push);
     }
   } catch (error) {
     console.log(error);

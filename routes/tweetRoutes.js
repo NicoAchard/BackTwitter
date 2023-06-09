@@ -10,6 +10,10 @@ router.get(
 );
 router.post("/", tweetController.store);
 router.delete("/:id", tweetController.destroy);
-router.post("/like", tweetController.like);
+router.post(
+  "/like",
+  checkJwt({ secret: process.env.TOKEN_SECRET, algorithms: ["HS256"] }),
+  tweetController.like,
+);
 
 module.exports = router;
