@@ -20,16 +20,23 @@ async function showFollowers(req, res) {
 }
 
 async function followUnfollow(req, res) {
-  if (req.user.following.includes(req.body.id)) {
+  const user = await User.findOne({ _id: req.auth.id }).populate("following").populate("followers");
+  const userTarget = await User.findById(req.body.id);
+  console.log(userTarget);
+  if (user.following.some((item) => item._id === userTarget._id)) {
     console.log("Dejaste de seguir");
-    await User.updateOne({ _id: req.user._id }, { $pull: { following: req.body.id } });
-    await User.updateOne({ _id: req.body.id }, { $pull: { followers: req.user._id } });
+    user.following.pull(userTarget._id);
+    await user.save();
+    userTarget.followers.pull(user._id);
+    await userTarget.save();
   } else {
     console.log("Empezaste a seguir");
-    await User.updateOne({ _id: req.user._id }, { $push: { following: req.body.id } });
-    await User.updateOne({ _id: req.body.id }, { $push: { followers: req.user._id } });
+    user.following.push(userTarget._id);
+    await user.save();
+    userTarget.followers.push(user._id);
+    await userTarget.save();
   }
-  return;
+  return res.json({ user });
 }
 
 async function store(req, res) {

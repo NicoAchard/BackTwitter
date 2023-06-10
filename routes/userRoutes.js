@@ -16,7 +16,13 @@ router.get(
   checkJwt({ secret: process.env.TOKEN_SECRET, algorithms: ["HS256"] }),
   userController.showFollowers,
 );
-// router.post("/follow", userController.followUnfollow);
+
+router.post(
+  "/follow",
+  checkJwt({ secret: process.env.TOKEN_SECRET, algorithms: ["HS256"] }),
+  userController.followUnfollow,
+);
+
 // router.get("/crear", ensureAuthenticated, userController.create);
 router.get(
   "/:username",
