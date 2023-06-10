@@ -8,13 +8,13 @@ async function show(req, res) {
 }
 
 async function showFollowing(req, res) {
-  const user = await User.findById(req.auth.id).populate("following");
+  const user = await User.findById(req.auth.id).populate("following").populate("followers");
   delete user.password;
   return res.json({ user });
 }
 
 async function showFollowers(req, res) {
-  const user = await User.findById(req.auth.id).populate("followers");
+  const user = await User.findById(req.auth.id).populate("following").populate("followers");
   delete user.password;
   return res.json({ user });
 }
@@ -22,8 +22,8 @@ async function showFollowers(req, res) {
 async function followUnfollow(req, res) {
   const user = await User.findOne({ _id: req.auth.id }).populate("following").populate("followers");
   const userTarget = await User.findById(req.body.id);
-  console.log(userTarget);
-  if (user.following.some((item) => item._id === userTarget._id)) {
+
+  if (user.following.some((item) => item._id.toString() === userTarget._id.toString())) {
     console.log("Dejaste de seguir");
     user.following.pull(userTarget._id);
     await user.save();
