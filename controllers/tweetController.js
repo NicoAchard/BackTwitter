@@ -35,15 +35,12 @@ async function update(req, res) {}
 
 // Remove the specified resource from storage.
 async function destroy(req, res) {
-  const user = await User.findById(req.auth.id);
-  if (user.tweetList.includes(req.params.id)) {
-    await Tweet.findByIdAndRemove(req.params.id);
-    await User.updateOne({ _id: req.auth.id }, { $pull: { tweetList: req.params.id } });
+  const user = await User.findById(req.auth.id).populate("tweetList");
 
-    return console.log("borrado");
-  } else {
-    return console.log(" no borrado");
-  }
+  user.tweetList = user.tweetList.filter((tweet) => tweet._id.toString() !== req.params.id);
+  await user.save();
+
+  return res.json({ tweetList: user.tweetList, user });
 }
 
 async function like(req, res) {
