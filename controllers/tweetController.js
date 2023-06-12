@@ -19,14 +19,28 @@ async function index(req, res) {
 
 // Store a newly created resource in storage.
 async function store(req, res) {
-  const tweet = await Tweet.create({
-    content: req.body.content,
-    author: req.auth.id,
-    createdAt: new Date(),
-    likes: [],
-  });
+  try {
+    const tweet = await Tweet.create({
+      content: req.body.content,
+      author: req.auth.id,
+      createdAt: new Date(),
+      likes: [],
+    });
 
-  return res.json({ response: "tweet creado" });
+    const user = await User.findById(req.auth.id);
+    user.tweetList.push(tweet._id);
+    await user.save();
+    let tweets = await Tweet.find({
+      $or: [{ author: { $in: user.following } }, { author: user._id }],
+    }).populate("author");
+
+    tweets.sort((a, b) => b.createdAt - a.createdAt);
+    tweets = tweets.slice(0, 20);
+
+    return res.json({ tweets: tweets });
+  } catch (e) {
+    return console.log(e);
+  }
 }
 
 // Update the specified resource in storage.
