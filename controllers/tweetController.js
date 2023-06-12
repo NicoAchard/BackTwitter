@@ -3,14 +3,14 @@ const User = require("../models/User");
 
 async function index(req, res) {
   try {
-    console.log("---------------");
-    console.log(req.auth);
     const user = await User.findById(req.auth.id);
-    let tweets = await Tweet.find({ author: { $in: user.following } }).populate("author");
+    let tweets = await Tweet.find({
+      $or: [{ author: { $in: user.following } }, { author: user._id }],
+    }).populate("author");
 
     tweets.sort((a, b) => b.createdAt - a.createdAt);
     tweets = tweets.slice(0, 20);
-    console.log(typeof tweets);
+
     return res.json({ tweets: tweets });
   } catch (e) {
     return console.log(e);
@@ -19,7 +19,6 @@ async function index(req, res) {
 
 // Store a newly created resource in storage.
 async function store(req, res) {
-  console.log(req.body);
   const tweet = await Tweet.create({
     content: req.body.content,
     author: req.auth.id,
@@ -46,7 +45,7 @@ async function destroy(req, res) {
 async function like(req, res) {
   try {
     const tweet = await Tweet.findById(req.body.tweetId);
-    console.log(req.auth);
+
     if (tweet.likes.includes(req.auth.id)) {
       tweet.likes.pull(req.auth.id);
       await tweet.save();
