@@ -20,10 +20,10 @@ async function showFollowers(req, res) {
 }
 
 async function followUnfollow(req, res) {
-  const user = await User.findOne({ id: req.auth.id }).populate("following").populate("followers");
+  const user = await User.findById({ id: req.auth.id }).populate("following").populate("followers");
   const userTarget = await User.findById(req.body.id);
 
-  if (user.following.some((item) => item.id.toString() === userTarget.id.toString())) {
+  if (user.following.some((item) => item.id === userTarget.id)) {
     console.log("Dejaste de seguir");
     user.following.pull(userTarget.id);
     await user.save();
