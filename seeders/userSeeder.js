@@ -38,11 +38,12 @@ module.exports = async () => {
     let email = faker.internet.email();
     const randomIndex = Math.floor(Math.random() * images.length);
     const randomImage = images[randomIndex];
-
+    const name = faker.name.firstName();
+    const lastName = faker.name.lastName();
     users.push({
-      firstname: faker.name.firstName(),
-      lastname: faker.name.lastName(),
-      username: email,
+      firstname: name,
+      lastname: lastName,
+      username: `${name}_${lastName}`,
       email: email,
       password: await bcrypt.hash("123", 2),
       createdAt: faker.date.past(),
