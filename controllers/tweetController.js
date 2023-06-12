@@ -26,18 +26,14 @@ async function store(req, res) {
       createdAt: new Date(),
       likes: [],
     });
+    await tweet.populate("author");
+    console.log(tweet);
 
     const user = await User.findById(req.auth.id);
-    user.tweetList.push(tweet.id);
+    user.tweetList.push(tweet._id);
     await user.save();
-    let tweets = await Tweet.find({
-      $or: [{ author: { $in: user.following } }, { author: user.id }],
-    }).populate("author");
 
-    tweets.sort((a, b) => b.createdAt - a.createdAt);
-    tweets = tweets.slice(0, 20);
-
-    return res.json({ tweets: tweets });
+    return res.json({ tweet });
   } catch (e) {
     return console.log(e);
   }
