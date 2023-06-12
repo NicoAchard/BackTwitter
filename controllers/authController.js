@@ -75,9 +75,13 @@ async function login(req, res) {
       });
     }
     if (!user) res.json("Credenciales inválidas");
-    if (!user.comparePassword(password)) res.json("Credenciales inválidas");
+    if (!(await user.comparePassword(password))) res.json("Credenciales inválidas");
     const token = jwt.sign({ id: user.id }, process.env.TOKEN_SECRET);
-    return res.json({ token, userLoggedId: user.id });
+    console.log(user);
+    return res.json({
+      token,
+      user: { following: user.following, username: user.username, id: user._id },
+    });
   } catch (e) {
     return console.log(e);
   }
