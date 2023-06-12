@@ -2,9 +2,13 @@ const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 
 async function show(req, res) {
-  let user = await User.findOne({ username: req.params.username }).populate("tweetList"); //Cambiar por "tweets"
-  user.tweetList.sort((a, b) => b.createdAt - a.createdAt);
-  return res.json({ tweetList: user.tweetList, user });
+  try {
+    let user = await User.findOne({ username: req.params.username }).populate("tweetList");
+    user.tweetList.sort((a, b) => b.createdAt - a.createdAt);
+    return res.json({ user });
+  } catch (e) {
+    console.log(e);
+  }
 }
 
 async function showFollowing(req, res) {
@@ -61,7 +65,10 @@ async function store(req, res) {
       followers: [],
     });
     const token = jwt.sign({ id: user.id }, process.env.TOKEN_SECRET);
-    return res.json({ token, userLoggedId: user.id });
+    return res.json({
+      token,
+      user: { following: user.following, username: user.username, id: user._id },
+    });
   } catch (error) {
     if (
       error.code === 11000 &&
