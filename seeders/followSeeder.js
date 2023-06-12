@@ -9,14 +9,14 @@ module.exports = async () => {
     let usersDuplicate = users;
     // nuevo array duplicado para poder borrar al usuario de randomAuthor y que no se repita para randomAuthor2
     const randomFollower = users[faker.datatype.number({ min: 0, max: users.length - 1 })];
-    // users = users.filter((user) => user._id != randomFollower._id);
+    // users = users.filter((user) => user.id != randomFollower.id);
     const randomFollowing = users[faker.datatype.number({ min: 0, max: users.length - 1 })];
-    if (randomFollower._id !== randomFollowing._id) {
+    if (randomFollower.id !== randomFollowing.id) {
       const userCreate = randomFollowing;
       const userCreate2 = randomFollower;
 
-      userCreate.following.push(userCreate2._id);
-      userCreate2.followers.push(userCreate._id);
+      userCreate.following.push(userCreate2.id);
+      userCreate2.followers.push(userCreate.id);
 
       await userCreate.save();
       await userCreate2.save();

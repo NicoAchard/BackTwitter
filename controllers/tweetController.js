@@ -5,7 +5,7 @@ async function index(req, res) {
   try {
     const user = await User.findById(req.auth.id);
     let tweets = await Tweet.find({
-      $or: [{ author: { $in: user.following } }, { author: user._id }],
+      $or: [{ author: { $in: user.following } }, { author: user.id }],
     }).populate("author");
 
     tweets.sort((a, b) => b.createdAt - a.createdAt);
@@ -28,10 +28,10 @@ async function store(req, res) {
     });
 
     const user = await User.findById(req.auth.id);
-    user.tweetList.push(tweet._id);
+    user.tweetList.push(tweet.id);
     await user.save();
     let tweets = await Tweet.find({
-      $or: [{ author: { $in: user.following } }, { author: user._id }],
+      $or: [{ author: { $in: user.following } }, { author: user.id }],
     }).populate("author");
 
     tweets.sort((a, b) => b.createdAt - a.createdAt);
@@ -50,7 +50,7 @@ async function update(req, res) {}
 async function destroy(req, res) {
   const user = await User.findById(req.auth.id).populate("tweetList");
 
-  user.tweetList = user.tweetList.filter((tweet) => tweet._id.toString() !== req.params.id);
+  user.tweetList = user.tweetList.filter((tweet) => tweet.id.toString() !== req.params.id);
   await user.save();
 
   return res.json({ tweetList: user.tweetList, user });

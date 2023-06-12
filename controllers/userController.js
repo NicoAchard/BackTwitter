@@ -20,20 +20,20 @@ async function showFollowers(req, res) {
 }
 
 async function followUnfollow(req, res) {
-  const user = await User.findOne({ _id: req.auth.id }).populate("following").populate("followers");
+  const user = await User.findOne({ id: req.auth.id }).populate("following").populate("followers");
   const userTarget = await User.findById(req.body.id);
 
-  if (user.following.some((item) => item._id.toString() === userTarget._id.toString())) {
+  if (user.following.some((item) => item.id.toString() === userTarget.id.toString())) {
     console.log("Dejaste de seguir");
-    user.following.pull(userTarget._id);
+    user.following.pull(userTarget.id);
     await user.save();
-    userTarget.followers.pull(user._id);
+    userTarget.followers.pull(user.id);
     await userTarget.save();
   } else {
     console.log("Empezaste a seguir");
-    user.following.push(userTarget._id);
+    user.following.push(userTarget.id);
     await user.save();
-    userTarget.followers.push(user._id);
+    userTarget.followers.push(user.id);
     await userTarget.save();
   }
   return res.json({ user });
@@ -56,7 +56,7 @@ async function store(req, res) {
       followers: [],
     });
     const token = jwt.sign({ id: user.id }, process.env.TOKEN_SECRET);
-    return res.json({ token, userLoggedId: user._id });
+    return res.json({ token, userLoggedId: user.id });
   } catch (error) {
     if (
       error.code === 11000 &&
