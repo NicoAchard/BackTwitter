@@ -20,23 +20,28 @@ async function showFollowers(req, res) {
 }
 
 async function followUnfollow(req, res) {
-  const user = await User.findById({ id: req.auth.id }).populate("following").populate("followers");
-  const userTarget = await User.findById(req.body.id);
+  try {
+    const userTarget = await User.findById(req.body.id);
+    console.log(req.auth.id);
+    const user = await User.findById(req.auth.id).populate("following").populate("followers");
 
-  if (user.following.some((item) => item.id === userTarget.id)) {
-    console.log("Dejaste de seguir");
-    user.following.pull(userTarget.id);
-    await user.save();
-    userTarget.followers.pull(user.id);
-    await userTarget.save();
-  } else {
-    console.log("Empezaste a seguir");
-    user.following.push(userTarget.id);
-    await user.save();
-    userTarget.followers.push(user.id);
-    await userTarget.save();
+    if (user.following.some((item) => item.id === userTarget.id)) {
+      console.log("Dejaste de seguir");
+      user.following.pull(userTarget.id);
+      await user.save();
+      userTarget.followers.pull(user.id);
+      await userTarget.save();
+    } else {
+      console.log("Empezaste a seguir");
+      user.following.push(userTarget.id);
+      await user.save();
+      userTarget.followers.push(user.id);
+      await userTarget.save();
+    }
+    return res.json({ user });
+  } catch (e) {
+    return console.log(e);
   }
-  return res.json({ user });
 }
 
 async function store(req, res) {
